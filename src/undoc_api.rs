@@ -4,7 +4,7 @@ use crate::lan_api::{boolean_int, truthy};
 use crate::opt_env_var;
 use crate::platform_api::{
     from_json, http_response_body, DeviceCapability, DeviceCapabilityKind, DeviceParameters,
-    EnumOption,
+    EnumOption, HttpRequestFailed,
 };
 use reqwest::Method;
 use serde::de::DeserializeOwned;
@@ -281,6 +281,36 @@ impl GoveeUndocumentedApi {
         let resp: DevicesResponse = http_response_body(response).await?;
 
         Ok(resp)
+    }
+
+    /// Log in and fetch the device list, retrying once if Govee rejects the
+    /// cached login. Returns the account whose token actually worked, so that
+    /// callers pass the refreshed credentials on to the IoT client.
+    ///
+    /// Govee reports an expired token as HTTP 200 with `{"status":401}` in the
+    /// response body, so the status check in `get_device_list` never sees it.
+    /// Retrying here lets a stale token recover on its own. Without it, a token
+    /// invalidated by an account password change fails every call until the
+    /// cache file is deleted by hand.
+    pub async fn login_and_get_device_list(
+        &self,
+    ) -> anyhow::Result<(LoginAccountResponse, DevicesResponse)> {
+        let acct = self.login_account_cached().await?;
+        let err = match self.get_device_list(&acct.token).await {
+            Ok(info) => return Ok((acct, info)),
+            Err(err) => err,
+        };
+
+        match HttpRequestFailed::from_err(&err) {
+            Some(failed) if failed.status() == reqwest::StatusCode::UNAUTHORIZED => {}
+            _ => return Err(err),
+        }
+
+        log::warn!("Govee rejected the cached login ({err:#}), logging in again");
+        self.invalidate_account_login();
+        let acct = self.login_account_cached().await?;
+        let info = self.get_device_list(&acct.token).await?;
+        Ok((acct, info))
     }
 
     pub fn invalidate_community_login(&self) {
