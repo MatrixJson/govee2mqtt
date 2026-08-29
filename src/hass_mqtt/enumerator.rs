@@ -1,6 +1,7 @@
 use crate::hass_mqtt::base::{Device, EntityConfig, Origin};
 use crate::hass_mqtt::button::ButtonConfig;
 use crate::hass_mqtt::climate::TargetTemperatureEntity;
+use crate::hass_mqtt::fan::Fan;
 use crate::hass_mqtt::humidifier::Humidifier;
 use crate::hass_mqtt::instance::EntityList;
 use crate::hass_mqtt::light::DeviceLight;
@@ -158,6 +159,12 @@ pub async fn enumerate_entities_for_device(
 
     if d.supports_rgb() || d.get_color_temperature_range().is_some() || d.supports_brightness() {
         entities.add(DeviceLight::for_device(d, state, None).await?);
+    }
+
+    // Govee reports its ceiling fans as lights, so the fan entity is driven
+    // by the capabilities the device advertises rather than its device type.
+    if let Some(fan) = Fan::for_device(d) {
+        entities.add(fan);
     }
 
     if matches!(
