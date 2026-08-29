@@ -1,5 +1,6 @@
 use crate::hass_mqtt::climate::mqtt_set_temperature;
 use crate::hass_mqtt::enumerator::{enumerate_all_entites, enumerate_entities_for_device};
+use crate::hass_mqtt::fan::{mqtt_fan_command, mqtt_fan_set_direction, mqtt_fan_set_percentage};
 use crate::hass_mqtt::humidifier::{mqtt_device_set_work_mode, mqtt_humidifier_set_target};
 use crate::hass_mqtt::instance::EntityList;
 use crate::hass_mqtt::number::mqtt_number_command;
@@ -531,6 +532,16 @@ async fn run_mqtt_loop(
             .await?;
         router
             .route("gv2mqtt/switch/:id/command/:instance", mqtt_switch_command)
+            .await?;
+
+        router
+            .route("gv2mqtt/fan/:id/command", mqtt_fan_command)
+            .await?;
+        router
+            .route("gv2mqtt/fan/:id/set-percentage", mqtt_fan_set_percentage)
+            .await?;
+        router
+            .route("gv2mqtt/fan/:id/set-direction", mqtt_fan_set_direction)
             .await?;
 
         router.route(oneclick_topic(), mqtt_oneclick).await?;
