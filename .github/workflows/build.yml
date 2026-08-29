@@ -1,6 +1,7 @@
 name: Container Build
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
@@ -9,6 +10,7 @@ on:
       - "20*"
     branches:
       - main
+      - deploy
     paths:
       - "**/*.rs"
       - "addon/**"
@@ -21,7 +23,7 @@ on:
       - ".dockerignore"
 
 env:
-  IMAGE: ghcr.io/wez/govee2mqtt
+  IMAGE: ghcr.io/matrixjson/govee2mqtt
 
 jobs:
   build:
@@ -44,8 +46,8 @@ jobs:
         with:
           images: ${{ env.IMAGE }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=ref,event=branch,enable=${{ github.ref != 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/deploy' }}
+            type=ref,event=branch,enable=${{ github.ref != 'refs/heads/deploy' }}
             type=ref,event=pr
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -125,8 +127,8 @@ jobs:
         with:
           images: ${{ env.IMAGE }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=ref,event=branch,enable=${{ github.ref != 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/deploy' }}
+            type=ref,event=branch,enable=${{ github.ref != 'refs/heads/deploy' }}
             type=ref,event=tag,enable=${{ github.ref_type == 'tag' }}
             type=ref,event=pr
       - name: Login to GHCR
@@ -147,7 +149,7 @@ jobs:
         run: |
           docker buildx imagetools inspect ${{ env.IMAGE }}:${{ steps.meta.outputs.version }}
   addon:
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/deploy' }}
     runs-on: ubuntu-latest
     needs:
       - merge
@@ -175,7 +177,7 @@ jobs:
             --target /data/addon
 
   test-addon:
-    if: ${{ ! ( github.event_name == 'push' && github.ref_type == 'tag' ) }}
+    if: ${{ ! ( github.event_name == 'push' && github.ref == 'refs/heads/deploy' ) }}
     runs-on: ubuntu-latest
     needs:
       # Note! Despite the dependency edge here to the build steps above,
