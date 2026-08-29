@@ -2,9 +2,18 @@ use crate::ble::NotifyHumidifierNightlightParams;
 use crate::commands::serve::POLL_INTERVAL;
 use crate::lan_api::{DeviceColor, DeviceStatus as LanDeviceStatus, LanDevice};
 use crate::platform_api::{
-    DeviceCapability, DeviceCapabilityState, DeviceType, HttpDeviceInfo, HttpDeviceState,
+    DeviceCapability, DeviceCapabilityState, DeviceParameters, DeviceType, HttpDeviceInfo,
+    HttpDeviceState,
 };
 use crate::service::quirks::{resolve_quirk, Quirk, BULB};
+
+/// Govee describes the fan portion of a device through these capability
+/// instances. They are consistent across its ceiling fan line, and the device
+/// type is no help, because Govee reports those fans as
+/// `devices.types.light`.
+pub const FAN_TOGGLE: &str = "fanToggle";
+pub const FAN_SPEED_MODE: &str = "fanSpeedMode";
+pub const REVERSE_AIRFLOW_TOGGLE: &str = "reverseAirflowToggle";
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
@@ -517,6 +526,37 @@ impl Device {
                 }
             }
         }
+    }
+
+    /// Govee ships the fan speeds of a ceiling fan in the same scene list that
+    /// it uses for light effects, so `Speed 1` through `Speed 6` turn up sorted
+    /// in among the real effects on the device's light entity. Drop any scene
+    /// whose name matches one of this device's own `fanSpeedMode` options.
+    ///
+    /// Matching the options the device reports, rather than a pattern like
+    /// "Speed N", means a device with no fan keeps every scene it reports, even
+    /// one genuinely named `Speed 1`.
+    ///
+    /// Knowing the option names requires the platform API metadata, so this can
+    /// only filter when `http_device_info` is present. A deployment configured
+    /// without an API key falls back to the undocumented API for its scene list
+    /// and still sees the fan speeds among its light effects.
+    pub fn filter_fan_speed_scenes(&self, scenes: Vec<String>) -> Vec<String> {
+        let Some(cap) = self.get_capability_by_instance(FAN_SPEED_MODE) else {
+            return scenes;
+        };
+        let Some(DeviceParameters::Enum { options }) = &cap.parameters else {
+            return scenes;
+        };
+
+        scenes
+            .into_iter()
+            .filter(|name| {
+                !options
+                    .iter()
+                    .any(|opt| opt.name.eq_ignore_ascii_case(name))
+            })
+            .collect()
     }
 
     pub fn get_color_temperature_range(&self) -> Option<(u32, u32)> {

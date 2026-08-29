@@ -1,21 +1,15 @@
 use crate::hass_mqtt::base::{Device, EntityConfig, Origin};
 use crate::hass_mqtt::instance::{publish_entity_config, EntityInstance};
 use crate::platform_api::DeviceParameters;
-use crate::service::device::Device as ServiceDevice;
+use crate::service::device::{
+    Device as ServiceDevice, FAN_SPEED_MODE, FAN_TOGGLE, REVERSE_AIRFLOW_TOGGLE,
+};
 use crate::service::hass::{availability_topic, topic_safe_id, HassClient, IdParameter};
 use crate::service::state::StateHandle;
 use anyhow::anyhow;
 use async_trait::async_trait;
 use mosquitto_rs::router::{Params, Payload, State};
 use serde::Serialize;
-
-/// Govee describes the fan portion of a device through these capability
-/// instances. They are consistent across the ceiling fan line, so we key off
-/// the capabilities rather than off the SKU. Note that Govee reports these
-/// devices as `devices.types.light`, so the device type tells us nothing.
-const FAN_TOGGLE: &str = "fanToggle";
-const FAN_SPEED_MODE: &str = "fanSpeedMode";
-const REVERSE_AIRFLOW_TOGGLE: &str = "reverseAirflowToggle";
 
 /// <https://www.home-assistant.io/integrations/fan.mqtt>
 #[derive(Serialize, Clone, Debug)]
@@ -124,32 +118,6 @@ fn speed_range(device: &ServiceDevice) -> Option<(i64, i64)> {
     }
 }
 
-/// Govee ships the fan speeds of a ceiling fan in the same scene list that it
-/// uses for light effects, so `Speed 1` through `Speed 6` turn up sorted in
-/// among the real effects on the device's light entity. Drop any scene whose
-/// name matches one of the device's own `fanSpeedMode` options.
-///
-/// Matching against the options the device reports, rather than against a
-/// pattern like "Speed N", means a device with no fan keeps every scene it
-/// reports, even one genuinely named `Speed 1`.
-pub fn filter_fan_speed_scenes(device: &ServiceDevice, scenes: Vec<String>) -> Vec<String> {
-    let Some(cap) = device.get_capability_by_instance(FAN_SPEED_MODE) else {
-        return scenes;
-    };
-    let Some(DeviceParameters::Enum { options }) = &cap.parameters else {
-        return scenes;
-    };
-
-    scenes
-        .into_iter()
-        .filter(|name| {
-            !options
-                .iter()
-                .any(|opt| opt.name.eq_ignore_ascii_case(name))
-        })
-        .collect()
-}
-
 #[async_trait]
 impl EntityInstance for Fan {
     async fn publish_config(&self, state: &StateHandle, client: &HassClient) -> anyhow::Result<()> {
@@ -217,6 +185,20 @@ pub async fn mqtt_fan_set_percentage(
         .get_capability_by_instance(FAN_SPEED_MODE)
         .ok_or_else(|| anyhow!("{device} has no {FAN_SPEED_MODE}"))?
         .clone();
+
+    // Reject a speed the device does not advertise, rather than letting the
+    // platform API fail the call with a less obvious error. hass can ask for
+    // one when its cached discovery config predates a change in the range the
+    // device reports.
+    let known_speed = match &cap.parameters {
+        Some(DeviceParameters::Enum { options }) => {
+            options.iter().any(|opt| opt.value.as_i64() == Some(speed))
+        }
+        _ => true,
+    };
+    if !known_speed {
+        anyhow::bail!("{device} does not report {speed} as a valid {FAN_SPEED_MODE} option");
+    }
 
     state.device_control(&device, &cap, speed).await?;
 
@@ -330,7 +312,7 @@ mod test {
         ];
 
         assert_eq!(
-            filter_fan_speed_scenes(&device_with_capabilities(FAN_CAPS), scenes),
+            device_with_capabilities(FAN_CAPS).filter_fan_speed_scenes(scenes),
             vec!["Sunrise".to_string(), "Sunset".to_string()]
         );
     }
@@ -340,7 +322,7 @@ mod test {
         let scenes = vec!["Speed 1".to_string(), "Sunrise".to_string()];
 
         assert_eq!(
-            filter_fan_speed_scenes(&device_with_capabilities(LIGHT_ONLY_CAPS), scenes.clone()),
+            device_with_capabilities(LIGHT_ONLY_CAPS).filter_fan_speed_scenes(scenes.clone()),
             scenes
         );
     }

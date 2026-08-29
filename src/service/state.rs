@@ -1,5 +1,4 @@
 use crate::ble::{Base64HexBytes, SetHumidifierMode, SetHumidifierNightlightParams};
-use crate::hass_mqtt::fan::filter_fan_speed_scenes;
 use crate::lan_api::{Client as LanClient, DeviceStatus as LanDeviceStatus, LanDevice};
 use crate::platform_api::{DeviceCapability, DeviceType, GoveeApiClient};
 use crate::service::coordinator::Coordinator;
@@ -601,10 +600,9 @@ impl State {
         // TODO: some plumbing to maintain offline scene controls for preferred-LAN control
         if let Some(client) = self.get_platform_client().await {
             if let Some(info) = &device.http_device_info {
-                return Ok(sort_and_dedup_scenes(filter_fan_speed_scenes(
-                    device,
-                    client.list_scene_names(info).await?,
-                )));
+                return Ok(sort_and_dedup_scenes(
+                    device.filter_fan_speed_scenes(client.list_scene_names(info).await?),
+                ));
             }
         }
 
@@ -620,9 +618,7 @@ impl State {
                     }
                 }
             }
-            return Ok(sort_and_dedup_scenes(filter_fan_speed_scenes(
-                device, names,
-            )));
+            return Ok(sort_and_dedup_scenes(device.filter_fan_speed_scenes(names)));
         }
 
         log::trace!("Platform API unavailable: Don't know how to list scenes for {device}");

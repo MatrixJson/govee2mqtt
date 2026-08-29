@@ -165,6 +165,28 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      # The add-on version is maintained by hand. If it is not bumped, the
+      # builder overwrites the existing tag, Home Assistant compares equal and
+      # reports no update, and the box keeps running the old image while this
+      # workflow reports success. Fail loudly instead.
+      - name: Fail if the add-on version was not bumped
+        run: |
+          VERSION=$(grep '^version:' addon/config.yaml | cut -d'"' -f2)
+          if [ -z "$VERSION" ]; then
+            echo "::error::could not read version from addon/config.yaml"
+            exit 1
+          fi
+          for ARCH in aarch64 amd64; do
+            IMAGE="${IMAGE_BASE}-${ARCH}:${VERSION}"
+            if docker buildx imagetools inspect "$IMAGE" >/dev/null 2>&1; then
+              echo "::error::$IMAGE already exists. Bump version: in addon/config.yaml so Home Assistant sees an update."
+              exit 1
+            fi
+          done
+          echo "add-on version $VERSION is new"
+        env:
+          IMAGE_BASE: ${{ env.IMAGE }}
+
       # --cosign is intentionally absent: the builder verifies the Home
       # Assistant base images against base_identity, and those images now
       # report "no signatures found", which fails the build. base_identity is
