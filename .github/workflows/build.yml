@@ -167,13 +167,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Apply tag to version
         run: ./scripts/apply-tag.sh
+      # --cosign is intentionally absent: the builder verifies the Home
+      # Assistant base images against base_identity, and those images now
+      # report "no signatures found", which fails the build. base_identity is
+      # upstream unchanged, so this is not specific to this fork.
       - name: Build and Publish Home Assistant Add On
         uses: home-assistant/builder@2026.02.1
         with:
           args: |
             --amd64 \
             --aarch64 \
-            --cosign \
             --target /data/addon
 
   test-addon:
@@ -212,5 +215,4 @@ jobs:
             --test \
             --amd64 \
             --aarch64 \
-            --cosign \
             --target /data/addon
