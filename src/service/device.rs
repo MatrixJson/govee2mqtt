@@ -15,10 +15,19 @@ pub const FAN_TOGGLE: &str = "fanToggle";
 pub const FAN_SPEED_MODE: &str = "fanSpeedMode";
 pub const REVERSE_AIRFLOW_TOGGLE: &str = "reverseAirflowToggle";
 use chrono::{DateTime, Utc};
+use crate::cache::{cache_lookup, cache_put};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::net::IpAddr;
+use std::time::Duration;
+
+/// Cache topic holding the toggle states we have commanded
+const COMMANDED_TOGGLE_TOPIC: &str = "commanded-toggle";
+
+/// These are the only record we have of the light zone states, so they must
+/// outlive any plausible gap between restarts.
+const COMMANDED_TOGGLE_TTL: Duration = Duration::from_secs(365 * 24 * 60 * 60);
 
 #[derive(Default, Clone, Debug)]
 pub struct Device {
@@ -379,14 +388,37 @@ impl Device {
         candidates.pop()
     }
 
-    /// Records an on/off that we just sent for a toggle instance
+    /// Records an on/off that we just sent for a toggle instance. This is
+    /// the only record of it that exists, so it goes to the cache as well as
+    /// to memory and survives a restart.
     pub fn set_commanded_toggle(&mut self, instance: &str, on: bool) {
         self.commanded_toggles.insert(instance.to_string(), on);
+
+        let key = self.commanded_toggle_key(instance);
+        if let Err(err) = cache_put(COMMANDED_TOGGLE_TOPIC, &key, &on, COMMANDED_TOGGLE_TTL) {
+            log::warn!("failed to persist {instance} for {self}: {err:#}");
+        }
     }
 
-    /// The last on/off we sent for a toggle instance, if we ever sent one
+    /// The last on/off we sent for a toggle instance, if we ever sent one.
+    /// Falls back to the cache, so a restart does not forget it.
     pub fn commanded_toggle(&self, instance: &str) -> Option<bool> {
-        self.commanded_toggles.get(instance).copied()
+        if let Some(on) = self.commanded_toggles.get(instance) {
+            return Some(*on);
+        }
+
+        let key = self.commanded_toggle_key(instance);
+        match cache_lookup(COMMANDED_TOGGLE_TOPIC, &key) {
+            Ok(on) => on,
+            Err(err) => {
+                log::warn!("failed to read back {instance} for {self}: {err:#}");
+                None
+            }
+        }
+    }
+
+    fn commanded_toggle_key(&self, instance: &str) -> String {
+        format!("{}-{instance}", self.id)
     }
 
     /// Records the active scene name

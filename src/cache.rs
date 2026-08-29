@@ -91,6 +91,30 @@ impl<T> CacheComputeResult<T> {
     }
 }
 
+/// Store a value that we own, rather than one computed from an API call.
+/// Nothing recomputes these, so they are written straight through and read
+/// back verbatim, with a TTL long enough to outlive any plausible restart.
+pub fn cache_put<T: Serialize>(
+    topic: &str,
+    key: &str,
+    value: &T,
+    ttl: Duration,
+) -> anyhow::Result<()> {
+    let topic = CACHE.load().topic(topic)?;
+    let data = serde_json::to_string(value)?;
+    topic.set(key, data.as_bytes(), ttl)?;
+    Ok(())
+}
+
+/// Read back a value stored by cache_put
+pub fn cache_lookup<T: DeserializeOwned>(topic: &str, key: &str) -> anyhow::Result<Option<T>> {
+    let topic = CACHE.load().topic(topic)?;
+    match topic.get(key)? {
+        Some(value) => Ok(Some(serde_json::from_slice(&value.data)?)),
+        None => Ok(None),
+    }
+}
+
 pub fn invalidate_key(topic: &str, key: &str) -> anyhow::Result<()> {
     let topic = CACHE.load().topic(topic)?;
     Ok(topic.delete(key)?)
