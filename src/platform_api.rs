@@ -995,9 +995,12 @@ pub struct HttpRequestFailed {
 }
 
 impl HttpRequestFailed {
-    #[allow(unused)]
     pub fn from_err(err: &anyhow::Error) -> Option<&Self> {
         err.root_cause().downcast_ref::<Self>()
+    }
+
+    pub fn status(&self) -> reqwest::StatusCode {
+        self.status
     }
 }
 
