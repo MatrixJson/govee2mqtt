@@ -1,0 +1,51 @@
+{
+  "devices": [
+    {
+      "groupId": 0,
+      "device": "XX:XX:XX:00:01",
+      "sku": "H7076",
+      "spec": "",
+      "versionHard": "3.05.01",
+      "versionSoft": "1.00.17",
+      "deviceName": "Support Enc Light",
+      "deviceExt": {
+        "deviceSettings": "{\"wifiName\": \"TestNet\", \"address\": \"XX:XX:XX\", \"bleName\": \"Govee_H7076_0001\", \"topic\": \"GD/\", \"wifiMac\": \"XX:XX:XX\", \"pactType\": 1, \"pactCode\": 2, \"wifiSoftVersion\": \"1.03.08\", \"wifiHardVersion\": \"1.04.01\", \"ic\": 9, \"secretCode\": \"secret\", \"boilWaterCompletedNotiOnOff\": 1, \"completionNotiOnOff\": 1, \"autoShutDownOnOff\": 1, \"supportBleBroadV3\": true, \"supportEnc\": true, \"sku\": \"H7076\", \"device\": \"XX:XX:XX:00:01\", \"deviceName\": \"Support Enc Light\", \"versionHard\": \"3.05.01\", \"versionSoft\": \"1.00.17\", \"playState\": false}",
+        "lastDeviceData": "{\"online\": false}",
+        "extResources": "{\"skuUrl\": \"\", \"headOnImg\": \"\", \"headOnImgNew\": \"\", \"headOffImg\": \"\", \"headOffImgNew\": \"\", \"ext\": \"\", \"ic\": 9}"
+      },
+      "pactType": 1,
+      "pactCode": 2,
+      "share": 0,
+      "deviceId": 1,
+      "gidConfirmed": true,
+      "goodsType": 313,
+      "attributesId": 150,
+      "supportScene": 0
+    },
+    {
+      "groupId": 0,
+      "device": "XX:XX:XX:00:02",
+      "sku": "H6020",
+      "spec": "",
+      "versionHard": "3.05.01",
+      "versionSoft": "1.00.17",
+      "deviceName": "Dual Wifi Module Speaker",
+      "deviceExt": {
+        "deviceSettings": "{\"wifiName\": \"TestNet\", \"address\": \"XX:XX:XX\", \"bleName\": \"Govee_H6020_0001\", \"topic\": \"GD/\", \"wifiMac\": \"XX:XX:XX\", \"pactType\": 1, \"pactCode\": 2, \"wifiSoftVersion\": \"1.03.08\", \"wifiHardVersion\": \"1.04.01\", \"ic\": 9, \"secretCode\": \"secret\", \"boilWaterCompletedNotiOnOff\": 1, \"completionNotiOnOff\": 1, \"autoShutDownOnOff\": 1, \"supportBleBroadV3\": true, \"supportEnc\": true, \"sku\": \"H6020\", \"device\": \"XX:XX:XX:00:02\", \"deviceName\": \"Dual Wifi Module Speaker\", \"versionHard\": \"3.05.01\", \"versionSoft\": \"1.00.17\", \"playState\": false, \"wifiSoftVersionV2\": \"1.02.20\", \"wifiHardVersionV2\": \"1.08.00\", \"wifiMacV2\": \"XX:XX:XX\"}",
+        "lastDeviceData": "{\"online\": false}",
+        "extResources": "{\"skuUrl\": \"\", \"headOnImg\": \"\", \"headOnImgNew\": \"\", \"headOffImg\": \"\", \"headOffImgNew\": \"\", \"ext\": \"\", \"ic\": 9}"
+      },
+      "pactType": 1,
+      "pactCode": 2,
+      "share": 0,
+      "deviceId": 1,
+      "gidConfirmed": true,
+      "goodsType": 210,
+      "attributesId": 87,
+      "supportScene": 0
+    }
+  ],
+  "groups": [],
+  "message": "",
+  "status": 200
+}

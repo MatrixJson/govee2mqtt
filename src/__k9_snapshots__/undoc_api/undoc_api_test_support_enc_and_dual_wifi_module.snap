@@ -1,0 +1,327 @@
+DevicesResponse {
+    devices: [
+        DeviceEntry {
+            attributes_id: 150,
+            device_id: Some(
+                1,
+            ),
+            device: "XX:XX:XX:00:01",
+            device_ext: DeviceEntryExt {
+                device_settings: DeviceSettings {
+                    wifi_name: Some(
+                        "TestNet",
+                    ),
+                    address: Some(
+                        "XX:XX:XX",
+                    ),
+                    ble_name: Some(
+                        "Govee_H7076_0001",
+                    ),
+                    topic: Some(
+                        REDACTED,
+                    ),
+                    wifi_mac: Some(
+                        "XX:XX:XX",
+                    ),
+                    pact_type: Some(
+                        1,
+                    ),
+                    pact_code: Some(
+                        2,
+                    ),
+                    dsp_version_soft: None,
+                    wifi_soft_version: Some(
+                        "1.03.08",
+                    ),
+                    wifi_hard_version: Some(
+                        "1.04.01",
+                    ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
+                    ic: Some(
+                        9,
+                    ),
+                    ic_sub_1: None,
+                    ic_sub_2: None,
+                    secret_code: Some(
+                        REDACTED,
+                    ),
+                    boil_water_completed_noti_on_off: true,
+                    boil_water_exception_noti_on_off: false,
+                    completion_noti_on_off: true,
+                    auto_shut_down_on_off: true,
+                    water_shortage_on_off: false,
+                    air_quality_on_off: false,
+                    mcu_soft_version: None,
+                    mcu_hard_version: None,
+                    sku: Some(
+                        "H7076",
+                    ),
+                    device: Some(
+                        "XX:XX:XX:00:01",
+                    ),
+                    device_name: Some(
+                        "Support Enc Light",
+                    ),
+                    version_hard: Some(
+                        "3.05.01",
+                    ),
+                    version_soft: Some(
+                        "1.00.17",
+                    ),
+                    play_state: Some(
+                        false,
+                    ),
+                    tem_min: None,
+                    tem_max: None,
+                    tem_warning: None,
+                    fah_open: None,
+                    tem_cali: None,
+                    hum_min: None,
+                    hum_max: None,
+                    hum_warning: None,
+                    hum_cali: None,
+                    net_waring: None,
+                    upload_rate: None,
+                    battery: None,
+                    time: None,
+                    wifi_level: None,
+                    pm25_min: None,
+                    pm25_max: None,
+                    pm25_warning: None,
+                    sub_devices: None,
+                    bd_type: None,
+                    filter_expire_on_off: false,
+                    shapes: None,
+                    support_ble_broad_v3: Some(
+                        true,
+                    ),
+                    support_enc: Some(
+                        true,
+                    ),
+                },
+                ext_resources: ExtResources {
+                    sku_url: Some(
+                        "",
+                    ),
+                    head_on_img_new: Some(
+                        "",
+                    ),
+                    head_on_img: Some(
+                        "",
+                    ),
+                    head_off_img: Some(
+                        "",
+                    ),
+                    head_off_img_new: Some(
+                        "",
+                    ),
+                    ext: Some(
+                        "",
+                    ),
+                    ic: Some(
+                        9,
+                    ),
+                },
+                last_device_data: LastDeviceData {
+                    online: Some(
+                        false,
+                    ),
+                    bind: None,
+                    tem: None,
+                    hum: None,
+                    last_time: None,
+                    avg_day_tem: None,
+                    avg_day_hum: None,
+                },
+            },
+            device_name: "Support Enc Light",
+            goods_type: 313,
+            group_id: 0,
+            pact_code: Some(
+                2,
+            ),
+            pact_type: Some(
+                1,
+            ),
+            share: Some(
+                0,
+            ),
+            sku: "H7076",
+            spec: "",
+            support_scene: false,
+            version_hard: "3.05.01",
+            version_soft: "1.00.17",
+            gid_confirmed: Some(
+                true,
+            ),
+        },
+        DeviceEntry {
+            attributes_id: 87,
+            device_id: Some(
+                1,
+            ),
+            device: "XX:XX:XX:00:02",
+            device_ext: DeviceEntryExt {
+                device_settings: DeviceSettings {
+                    wifi_name: Some(
+                        "TestNet",
+                    ),
+                    address: Some(
+                        "XX:XX:XX",
+                    ),
+                    ble_name: Some(
+                        "Govee_H6020_0001",
+                    ),
+                    topic: Some(
+                        REDACTED,
+                    ),
+                    wifi_mac: Some(
+                        "XX:XX:XX",
+                    ),
+                    pact_type: Some(
+                        1,
+                    ),
+                    pact_code: Some(
+                        2,
+                    ),
+                    dsp_version_soft: None,
+                    wifi_soft_version: Some(
+                        "1.03.08",
+                    ),
+                    wifi_hard_version: Some(
+                        "1.04.01",
+                    ),
+                    wifi_soft_version_v2: Some(
+                        "1.02.20",
+                    ),
+                    wifi_hard_version_v2: Some(
+                        "1.08.00",
+                    ),
+                    wifi_mac_v2: Some(
+                        "XX:XX:XX",
+                    ),
+                    ic: Some(
+                        9,
+                    ),
+                    ic_sub_1: None,
+                    ic_sub_2: None,
+                    secret_code: Some(
+                        REDACTED,
+                    ),
+                    boil_water_completed_noti_on_off: true,
+                    boil_water_exception_noti_on_off: false,
+                    completion_noti_on_off: true,
+                    auto_shut_down_on_off: true,
+                    water_shortage_on_off: false,
+                    air_quality_on_off: false,
+                    mcu_soft_version: None,
+                    mcu_hard_version: None,
+                    sku: Some(
+                        "H6020",
+                    ),
+                    device: Some(
+                        "XX:XX:XX:00:02",
+                    ),
+                    device_name: Some(
+                        "Dual Wifi Module Speaker",
+                    ),
+                    version_hard: Some(
+                        "3.05.01",
+                    ),
+                    version_soft: Some(
+                        "1.00.17",
+                    ),
+                    play_state: Some(
+                        false,
+                    ),
+                    tem_min: None,
+                    tem_max: None,
+                    tem_warning: None,
+                    fah_open: None,
+                    tem_cali: None,
+                    hum_min: None,
+                    hum_max: None,
+                    hum_warning: None,
+                    hum_cali: None,
+                    net_waring: None,
+                    upload_rate: None,
+                    battery: None,
+                    time: None,
+                    wifi_level: None,
+                    pm25_min: None,
+                    pm25_max: None,
+                    pm25_warning: None,
+                    sub_devices: None,
+                    bd_type: None,
+                    filter_expire_on_off: false,
+                    shapes: None,
+                    support_ble_broad_v3: Some(
+                        true,
+                    ),
+                    support_enc: Some(
+                        true,
+                    ),
+                },
+                ext_resources: ExtResources {
+                    sku_url: Some(
+                        "",
+                    ),
+                    head_on_img_new: Some(
+                        "",
+                    ),
+                    head_on_img: Some(
+                        "",
+                    ),
+                    head_off_img: Some(
+                        "",
+                    ),
+                    head_off_img_new: Some(
+                        "",
+                    ),
+                    ext: Some(
+                        "",
+                    ),
+                    ic: Some(
+                        9,
+                    ),
+                },
+                last_device_data: LastDeviceData {
+                    online: Some(
+                        false,
+                    ),
+                    bind: None,
+                    tem: None,
+                    hum: None,
+                    last_time: None,
+                    avg_day_tem: None,
+                    avg_day_hum: None,
+                },
+            },
+            device_name: "Dual Wifi Module Speaker",
+            goods_type: 210,
+            group_id: 0,
+            pact_code: Some(
+                2,
+            ),
+            pact_type: Some(
+                1,
+            ),
+            share: Some(
+                0,
+            ),
+            sku: "H6020",
+            spec: "",
+            support_scene: false,
+            version_hard: "3.05.01",
+            version_soft: "1.00.17",
+            gid_confirmed: Some(
+                true,
+            ),
+        },
+    ],
+    groups: [],
+    message: "",
+    status: 200,
+}
