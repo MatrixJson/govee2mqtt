@@ -17,6 +17,14 @@ pub struct SwitchConfig {
     pub base: EntityConfig,
     pub command_topic: String,
     pub state_topic: String,
+    /// Govee returns an empty string for the state of the light zone toggles,
+    /// so nothing ever lands on `state_topic` and the entity sits at unknown.
+    /// The hass frontend only sends `turn_on` from a state it recognises as
+    /// off, so an unknown switch answers every tap with `turn_off`. Run those
+    /// toggles optimistically: hass tracks what it last asked for, and still
+    /// applies a real state message if Govee ever starts reporting one.
+    /// <https://developer.govee.com/discuss/6596e84c901fb900312d5968>
+    pub optimistic: bool,
 }
 
 impl SwitchConfig {
@@ -50,6 +58,8 @@ impl SwitchConfig {
             },
             command_topic,
             state_topic,
+            // powerSwitch is the one instance Govee reports a real state for.
+            optimistic: instance.instance != "powerSwitch",
         })
     }
 
