@@ -5,6 +5,18 @@ own entries below are maintained by hand, because its add-on versions are
 pinned in `addon/config.yaml` rather than tagged, and git-cliff sections the
 changelog by tag.
 
+## [2026.08.29.6] - 2026-08-29 01:41
+
+### 🐛 Bug Fixes
+
+- Show the light zones as on when the fixture is on
+
+A zone with no commanded state published nothing at all, so the switch sat at
+whatever hass happened to hold and turning the light on could not correct it.
+A zone with no record of its own now follows the fixture, and the derived state
+reads light_on rather than the device power, so the zones agree with the light
+entity.
+
 ## [2026.08.29.5] - 2026-08-29 01:29
 
 ### 🐛 Bug Fixes
