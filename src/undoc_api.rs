@@ -813,6 +813,10 @@ pub struct DeviceSettings {
     pub dsp_version_soft: Option<JsonValue>,
     pub wifi_soft_version: Option<String>,
     pub wifi_hard_version: Option<String>,
+    /// Devices with a second wifi module report a parallel set of V2 fields
+    pub wifi_soft_version_v2: Option<String>,
+    pub wifi_hard_version_v2: Option<String>,
+    pub wifi_mac_v2: Option<String>,
     pub ic: Option<u32>,
     #[serde(rename = "ic_sub_1")]
     pub ic_sub_1: Option<u32>,
@@ -868,6 +872,7 @@ pub struct DeviceSettings {
     /// eg: Glide Hexa. Value is base64 encoded data
     pub shapes: Option<String>,
     pub support_ble_broad_v3: Option<bool>,
+    pub support_enc: Option<bool>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -966,6 +971,15 @@ mod test {
     fn issue_21() {
         let resp: DevicesResponse =
             from_json(include_str!("../test-data/undoc-device-list-issue-21.json")).unwrap();
+        k9::assert_matches_snapshot!(format!("{resp:#?}"));
+    }
+
+    #[test]
+    fn support_enc_and_dual_wifi_module() {
+        let resp: DevicesResponse = from_json(include_str!(
+            "../test-data/undoc-device-list-support-enc.json"
+        ))
+        .unwrap();
         k9::assert_matches_snapshot!(format!("{resp:#?}"));
     }
 }

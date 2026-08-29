@@ -36,6 +36,9 @@ DevicesResponse {
                     wifi_hard_version: Some(
                         "1.02.00",
                     ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
                     ic: Some(
                         15,
                     ),
@@ -92,6 +95,7 @@ DevicesResponse {
                     filter_expire_on_off: false,
                     shapes: None,
                     support_ble_broad_v3: None,
+                    support_enc: None,
                 },
                 ext_resources: ExtResources {
                     sku_url: Some(
@@ -183,6 +187,9 @@ DevicesResponse {
                     wifi_hard_version: Some(
                         "1.03.00",
                     ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
                     ic: Some(
                         50,
                     ),
@@ -237,6 +244,7 @@ DevicesResponse {
                     filter_expire_on_off: false,
                     shapes: None,
                     support_ble_broad_v3: None,
+                    support_enc: None,
                 },
                 ext_resources: ExtResources {
                     sku_url: Some(
@@ -328,6 +336,9 @@ DevicesResponse {
                     wifi_hard_version: Some(
                         "1.02.00",
                     ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
                     ic: Some(
                         30,
                     ),
@@ -384,6 +395,7 @@ DevicesResponse {
                     filter_expire_on_off: false,
                     shapes: None,
                     support_ble_broad_v3: None,
+                    support_enc: None,
                 },
                 ext_resources: ExtResources {
                     sku_url: Some(
@@ -473,6 +485,9 @@ DevicesResponse {
                     wifi_hard_version: Some(
                         "1.02.00",
                     ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
                     ic: Some(
                         15,
                     ),
@@ -529,6 +544,7 @@ DevicesResponse {
                     filter_expire_on_off: false,
                     shapes: None,
                     support_ble_broad_v3: None,
+                    support_enc: None,
                 },
                 ext_resources: ExtResources {
                     sku_url: Some(
@@ -620,6 +636,9 @@ DevicesResponse {
                     wifi_hard_version: Some(
                         "1.02.00",
                     ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
                     ic: Some(
                         30,
                     ),
@@ -676,6 +695,7 @@ DevicesResponse {
                     filter_expire_on_off: false,
                     shapes: None,
                     support_ble_broad_v3: None,
+                    support_enc: None,
                 },
                 ext_resources: ExtResources {
                     sku_url: Some(
@@ -759,6 +779,9 @@ DevicesResponse {
                     wifi_hard_version: Some(
                         "1.00.01",
                     ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
                     ic: Some(
                         0,
                     ),
@@ -813,6 +836,7 @@ DevicesResponse {
                     filter_expire_on_off: false,
                     shapes: None,
                     support_ble_broad_v3: None,
+                    support_enc: None,
                 },
                 ext_resources: ExtResources {
                     sku_url: Some(
@@ -900,6 +924,9 @@ DevicesResponse {
                     wifi_hard_version: Some(
                         "1.02.00",
                     ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
                     ic: Some(
                         15,
                     ),
@@ -956,6 +983,7 @@ DevicesResponse {
                     filter_expire_on_off: false,
                     shapes: None,
                     support_ble_broad_v3: None,
+                    support_enc: None,
                 },
                 ext_resources: ExtResources {
                     sku_url: Some(
@@ -1039,6 +1067,9 @@ DevicesResponse {
                     wifi_hard_version: Some(
                         "1.00.01",
                     ),
+                    wifi_soft_version_v2: None,
+                    wifi_hard_version_v2: None,
+                    wifi_mac_v2: None,
                     ic: Some(
                         0,
                     ),
@@ -1093,6 +1124,7 @@ DevicesResponse {
                     filter_expire_on_off: false,
                     shapes: None,
                     support_ble_broad_v3: None,
+                    support_enc: None,
                 },
                 ext_resources: ExtResources {
                     sku_url: Some(
