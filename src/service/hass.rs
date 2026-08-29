@@ -457,6 +457,13 @@ async fn mqtt_switch_command(
     } else if let Some(client) = state.get_platform_client().await {
         if let Some(http_dev) = &device.http_device_info {
             client.set_toggle_state(http_dev, &instance, on).await?;
+            // Govee reports nothing back for these, so remember what we asked
+            // for. CapabilitySwitch::notify_state combines it with the power
+            // state to work out whether the zone is actually lit.
+            state
+                .device_mut(&device.sku, &device.id)
+                .await
+                .set_commanded_toggle(&instance, on);
         } else {
             anyhow::bail!("No platform state available to set {id} {instance} to {on}");
         }

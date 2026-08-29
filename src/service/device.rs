@@ -53,6 +53,10 @@ pub struct Device {
     pub last_polled: Option<DateTime<Utc>>,
 
     active_scene: Option<ActiveSceneInfo>,
+
+    /// The last on/off we asked for on each toggle instance. Govee reports
+    /// nothing back for these, so it is the only record of what they should be.
+    commanded_toggles: HashMap<String, bool>,
 }
 
 impl std::fmt::Display for Device {
@@ -373,6 +377,16 @@ impl Device {
         candidates.sort_by(|a, b| a.updated.cmp(&b.updated));
 
         candidates.pop()
+    }
+
+    /// Records an on/off that we just sent for a toggle instance
+    pub fn set_commanded_toggle(&mut self, instance: &str, on: bool) {
+        self.commanded_toggles.insert(instance.to_string(), on);
+    }
+
+    /// The last on/off we sent for a toggle instance, if we ever sent one
+    pub fn commanded_toggle(&self, instance: &str) -> Option<bool> {
+        self.commanded_toggles.get(instance).copied()
     }
 
     /// Records the active scene name

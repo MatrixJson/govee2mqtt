@@ -120,9 +120,7 @@ impl EntityInstance for CapabilitySwitch {
         // additional states. When they do, we'll need to start reporting
         // it here, but we'll also need to start polling it from the
         // platform API in order for it to even be available here.
-        // Until then, the switch will show in the hass UI with an
-        // unknown state but provide you with separate on and off push
-        // buttons so that you can at least send the commands to the device.
+        // Until then we fall through to the derived state below.
         // <https://developer.govee.com/discuss/6596e84c901fb900312d5968>
 
         if let Some(cap) = device.get_state_capability_by_instance(&self.instance_name) {
@@ -141,10 +139,27 @@ impl EntityInstance for CapabilitySwitch {
                     } else {
                         log::warn!("CapabilitySwitch::notify_state: Do something with {cap:#?}");
                     }
-                    return Ok(());
                 }
             }
         }
+
+        // Govee told us nothing, so derive it. A light zone is lit only when
+        // the light power is on and we last asked that zone to be on, and
+        // cutting the power takes every zone down with it without reporting a
+        // thing. Without this the zones keep claiming to be on after the light
+        // is switched off.
+        if let (Some(commanded), Some(power)) = (
+            device.commanded_toggle(&self.instance_name),
+            device.device_state(),
+        ) {
+            return client
+                .publish(
+                    &self.switch.state_topic,
+                    if power.on && commanded { "ON" } else { "OFF" },
+                )
+                .await;
+        }
+
         log::trace!(
             "CapabilitySwitch::notify_state: didn't find state for {device} {instance}",
             instance = self.instance_name
