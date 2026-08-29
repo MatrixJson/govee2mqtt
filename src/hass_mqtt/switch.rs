@@ -148,14 +148,23 @@ impl EntityInstance for CapabilitySwitch {
         // cutting the power takes every zone down with it without reporting a
         // thing. Without this the zones keep claiming to be on after the light
         // is switched off.
-        if let (Some(commanded), Some(power)) = (
-            device.commanded_toggle(&self.instance_name),
-            device.device_state(),
-        ) {
+        if let Some(state) = device.device_state() {
+            // A zone we have no record for follows the fixture, because Govee
+            // lights every zone when the light comes on. Publishing that guess
+            // beats publishing nothing, which leaves the switch stuck at
+            // whatever hass happened to have. The first command for the zone
+            // replaces it with a real value.
+            let commanded = device.commanded_toggle(&self.instance_name).unwrap_or(true);
+
+            // Match the light entity, which reads light_on rather than on.
+            // They are the same for a device whose powerSwitch is its light,
+            // and light_on is the correct one where they differ.
+            let light_on = state.light_on.unwrap_or(state.on);
+
             return client
                 .publish(
                     &self.switch.state_topic,
-                    if power.on && commanded { "ON" } else { "OFF" },
+                    if light_on && commanded { "ON" } else { "OFF" },
                 )
                 .await;
         }
